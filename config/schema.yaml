@@ -1,0 +1,51 @@
+columns:
+  sku: int64
+  national_inv: int64
+  lead_time: int64
+  in_transit_qty: int64
+  forecast_3_month: int64
+  forecast_6_month: int64
+  forecast_9_month: int64
+  sales_1_month: int64
+  sales_3_month: int64
+  sales_6_month: int64
+  sales_9_month: int64
+  min_bank: int64
+  potential_issue: category
+  pieces_past_due: int64
+  perf_6_month_avg: float
+  perf_12_month_avg: float
+  local_bo_qty: int64
+  deck_risk: category
+  oe_constraint: category
+  ppap_risk: category
+  stop_auto_buy: category
+  rev_stop: category
+  went_on_backorder: category
+
+categorical_columns:
+- sku
+- national_inv
+- lead_time
+- in_transit_qty
+- forecast_3_month
+- forecast_6_month
+- forecast_9_month
+- sales_1_month
+- sales_3_month
+- sales_6_month
+- sales_9_month
+- min_bank
+- pieces_past_due
+- local_bo_qty
+
+numerical_columns:
+- potential_issue
+- deck_risk
+- oe_constraint
+- ppap_risk
+- stop_auto_buy
+- rev_stop
+- went_on_backorder
+
+target_column: went_on_backorder

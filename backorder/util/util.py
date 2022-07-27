@@ -107,5 +107,5 @@ def load_data(file_path: str, schema_file_path: str) -> pd.DataFrame:
         return dataframe
 
     except Exception as e:
-        raise HousingException(e,sys) from e
+        raise BackorderPredictionException(e,sys) from e
     

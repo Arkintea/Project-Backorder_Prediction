@@ -26,6 +26,9 @@ class DataIngestion:
 
             #folder location to download file
             rar_download_dir = self.data_ingestion_config.rar_download_dir
+
+            if os.path.exists(rar_download_dir):
+                os.remove(rar_download_dir)
             
             #check existence of folder
             os.makedirs(rar_download_dir, exist_ok=True)
@@ -35,9 +38,12 @@ class DataIngestion:
             rar_file_path = os.path.join(rar_download_dir, backorder_file_name)
 
             logging.info(f"Downloading file from :[{download_url}] into :[{rar_file_path}]")
+
+            #retrieve (url of the data, folder where file should be downloaded into)
             urllib.request.urlretrieve(download_url, rar_file_path)
             logging.info(f"File :[{rar_file_path}] has been downloaded successfully.")
             return rar_file_path
+            
         except Exception as e:
             raise BackorderPredictionException(e,sys) from e
 
@@ -64,25 +70,24 @@ class DataIngestion:
 
             file_name = os.listdir(raw_data_dir)[0]
 
-            backorder_file_path = os.path.join(raw_data_dir,file_name)
-
-
+            backorder_file_path = os.path.join(raw_data_dir, file_name)
 
             logging.info(f"Reading csv file: [{backorder_file_path}]")
+
             backorder_data_frame = pd.read_csv(backorder_file_path)
 
-            """backorder_data_frame["went_on_backorder"] = pd.cut(backorder_data_frame["median_income"], 
-                                                            bins=[0.0, 1.5, 3.0, 4.5, 6.0, np.inf], 
-                                                            labels=[1,2,3,4,5])"""            
+            backorder_data_frame["backorder_category"] = pd.cut(backorder_data_frame["lead_time"], 
+                                                            bins=[0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, np.inf], 
+                                                            labels=[1,2,3,4,5,6,7,8,9]) 
 
             logging.info(f"Splitting data into train and test")
             strat_train_set = None
             strat_test_set = None
             split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
 
-            for train_index, test_index in split.split(backorder_data_frame, backorder_data_frame["went_on_backorder"]):
-                strat_train_set = backorder_data_frame.loc[train_index].drop(["went_on_backorder"],axis=1)
-                strat_test_set = backorder_data_frame.loc[test_index].drop(["went_on_backorder"],axis=1)
+            for train_index, test_index in split.split(backorder_data_frame, backorder_data_frame["backorder_category"]):
+                strat_train_set = backorder_data_frame.loc[train_index].drop(["backorder_category"], axis=1)
+                strat_test_set = backorder_data_frame.loc[test_index].drop(["backorder_category"], axis=1)
 
             train_file_path = os.path.join(self.data_ingestion_config.ingested_train_dir,
                                             file_name)
@@ -93,12 +98,12 @@ class DataIngestion:
             if strat_train_set is not None:
                 os.makedirs(self.data_ingestion_config.ingested_train_dir, exist_ok=True)
                 logging.info(f"Exporting training datset to file: [{train_file_path}]")
-                strat_train_set.to_csv(train_file_path,index=False)
+                strat_train_set.to_csv(train_file_path, index=False)
 
             if strat_test_set is not None:
                 os.makedirs(self.data_ingestion_config.ingested_test_dir, exist_ok= True)
                 logging.info(f"Exporting test dataset to file: [{test_file_path}]")
-                strat_test_set.to_csv(test_file_path,index=False)
+                strat_test_set.to_csv(test_file_path, index=False)
 
             data_ingestion_artifact = DataIngestionArtifact(train_file_path=train_file_path, 
                                                             test_file_path=test_file_path, 
@@ -109,6 +114,7 @@ class DataIngestion:
 
         except Exception as e:
             raise BackorderPredictionException(e,sys) from e
+
 
     def initiate_data_ingestion(self)-> DataIngestionArtifact:
         try:

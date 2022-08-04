@@ -3,9 +3,9 @@ training_pipeline_config:
   artifact_dir: artifact
 
 data_ingestion_config:
-  dataset_download_url: https://github.com/rodrigosantis1/backorder_prediction/raw/master/dataset.rar
+  dataset_download_url: https://github.com/Arkintea/Dataset/raw/main/backorder.zip
   raw_data_dir: raw_data
-  rar_download_dir: rar_data
+  zip_download_dir: zip_data
   ingested_dir: ingested_data
   ingested_train_dir: train
   ingested_test_dir: test 
@@ -36,3 +36,4 @@ model_evaluation_config:
 
 model_pusher_config:
   model_export_dir: saved_models
+  

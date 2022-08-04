@@ -78,7 +78,7 @@ class DataIngestion:
 
             backorder_data_frame["backorder_category"] = pd.cut(backorder_data_frame["lead_time"], 
                                                             bins=[0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, np.inf], 
-                                                            labels=[1,2,3,4,5,6,7,8,9]) 
+                                                            labels=[1,2,3,4,5,6,7,8]) 
 
             logging.info(f"Splitting data into train and test")
             strat_train_set = None

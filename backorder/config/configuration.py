@@ -1,11 +1,10 @@
-
-from backorder.entity.config_entity import DataIngestionConfig, DataTransformationConfig,DataValidationConfig,   \
-ModelTrainerConfig,ModelEvaluationConfig,ModelPusherConfig,TrainingPipelineConfig
+from backorder.entity.config_entity import *
 from backorder.util.util import read_yaml_file
 from backorder.logger import logging
 import sys, os
 from backorder.constant import *
 from backorder.exception import BackorderPredictionException
+from datetime import datetime
 
 
 class Configuartion:
@@ -28,8 +27,8 @@ class Configuartion:
             data_ingestion_info = self.config_info[DATA_INGESTION_CONFIG_KEY]
             
             dataset_download_url = data_ingestion_info[DATA_INGESTION_DOWNLOAD_URL_KEY]
-            rar_download_dir = os.path.join(data_ingestion_artifact_dir, 
-                                            data_ingestion_info[DATA_INGESTION_RAR_DOWNLOAD_DIR_KEY])
+            zip_download_dir = os.path.join(data_ingestion_artifact_dir, 
+                                            data_ingestion_info[DATA_INGESTION_ZIP_DOWNLOAD_DIR_KEY])
             raw_data_dir = os.path.join(data_ingestion_artifact_dir, 
                                         data_ingestion_info[DATA_INGESTION_RAW_DATA_DIR_KEY])
 
@@ -41,7 +40,7 @@ class Configuartion:
                                             data_ingestion_info[DATA_INGESTION_TEST_DIR_KEY])
 
             data_ingestion_config = DataIngestionConfig(dataset_download_url=dataset_download_url, 
-                                                        rar_download_dir=rar_download_dir, 
+                                                        zip_download_dir=zip_download_dir, 
                                                         raw_data_dir=raw_data_dir, 
                                                         ingested_train_dir=ingested_train_dir, 
                                                         ingested_test_dir=ingested_test_dir)
@@ -81,8 +80,7 @@ class Configuartion:
                                                             DATA_TRANSFORMATION_ARTIFACT_DIR,
                                                             self.time_stamp)
             data_transformation_info = self.config_info[DATA_TRANSFORMATION_CONFIG_KEY]
-
-            optional_added_column = data_transformation_info[DATA_TRANSFORMATION_ADD_OPTIONAL_ADDED_COLUMN]
+            
             preprocessed_object_file_path = os.path.join(data_transformation_artifact_dir,
                                                         data_transformation_info[DATA_TRANSFORMATION_PREPROCESSING_DIR_KEY], 
                                                         data_transformation_info[DATA_TRANSFORMATION_PREPROCESSED_FILE_NAME_KEY])
@@ -93,8 +91,7 @@ class Configuartion:
                                                 data_transformation_info[DATA_TRANSFORMATION_DIR_NAME_KEY], 
                                                 data_transformation_info[DATA_TRANSFORMATION_TEST_DIR_NAME_KEY])
             
-            data_transformation_config = DataTransformationConfig(optional_added_column=optional_added_column, 
-                                                                preprocessed_object_file_path=preprocessed_object_file_path, 
+            data_transformation_config = DataTransformationConfig(preprocessed_object_file_path=preprocessed_object_file_path, 
                                                                 transformed_train_dir=transformed_train_dir, 
                                                                 transformed_test_dir=transformed_test_dir)
             logging.info(f"Data transformation config: {data_transformation_config}")
@@ -126,13 +123,11 @@ class Configuartion:
 
     def get_model_evaluation_config(self) ->ModelEvaluationConfig:
         try:
-            artifact_dir = self.training_pipeline_config.artifact_dir
-            model_evaluation_artifact_dir = os.path.join(artifact_dir,
-                                                    MODEL_EVALUATION_ARTIFACT_DIR, 
-                                                    self.time_stamp)
+            artifact_dir = os.path.join(self.training_pipeline_config.artifact_dir,
+                                                    MODEL_EVALUATION_ARTIFACT_DIR,)
             model_evaluation_info = self.config_info[MODEL_EVALUATION_CONFIG_KEY]
 
-            model_evaluation_file_path = os.path.join(model_evaluation_artifact_dir,
+            model_evaluation_file_path = os.path.join(artifact_dir,
                                                     model_evaluation_info[MODEL_EVALUATION_FILE_NAME_KEY])
             response = ModelEvaluationConfig(model_evaluation_file_path=model_evaluation_file_path,
                                             time_stamp=self.time_stamp)
@@ -140,7 +135,6 @@ class Configuartion:
             return response
         except Exception as e:
             raise BackorderPredictionException(e,sys) from e
-
 
     def get_model_pusher_config(self) -> ModelPusherConfig:
         try:

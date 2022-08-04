@@ -23,7 +23,7 @@ columns:
   rev_stop: category
   went_on_backorder: category
 
-categorical_columns:
+numerical_columns:
 - sku
 - national_inv
 - lead_time
@@ -37,9 +37,11 @@ categorical_columns:
 - sales_9_month
 - min_bank
 - pieces_past_due
+- perf_6_month_avg
+- perf_12_month_avg
 - local_bo_qty
 
-numerical_columns:
+categorical_columns:
 - potential_issue
 - deck_risk
 - oe_constraint
@@ -49,3 +51,32 @@ numerical_columns:
 - went_on_backorder
 
 target_column: went_on_backorder
+
+domain value:
+  potential_issue :
+    - yes
+    - no
+  
+  deck_risk :
+    - yes
+    - no
+
+  oe_constraint:
+    - yes
+    - no
+
+  ppap_risk :
+    - yes
+    - no
+  
+  stop_auto_buy :
+    - yes
+    - no
+
+  rev_stop:
+    - yes
+    - no
+
+  went_on_backorder:
+    - yes
+    - no

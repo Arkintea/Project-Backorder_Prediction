@@ -21,7 +21,7 @@ def write_yaml_file(file_path:str, data:dict=None):
         raise BackorderPredictionException(e,sys)
 
 
-def read_yaml_file(file_path:str)->dict:
+def read_yaml_file(file_path:str) -> dict:
     """
     Reads a YAML file and returns the contents as a dictionary.
     file_path: str

@@ -3,5 +3,9 @@ Flask
 gunicorn
 sklearn
 pandas
--e .
 PyYAML
+evidently
+dill
+pymongo
+matplotlib
+-e .

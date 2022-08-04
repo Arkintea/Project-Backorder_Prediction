@@ -9,6 +9,7 @@ from six.moves import urllib
 import pandas as pd
 from sklearn.model_selection import StratifiedShuffleSplit
 
+
 class DataIngestion:
 
     def __init__(self, data_ingestion_config:DataIngestionConfig):
@@ -25,29 +26,30 @@ class DataIngestion:
             download_url = self.data_ingestion_config.dataset_download_url
 
             #folder location to download file
-            rar_download_dir = self.data_ingestion_config.rar_download_dir
+            zip_download_url = self.data_ingestion_config.zip_download_dir
 
-            if os.path.exists(rar_download_dir):
-                os.remove(rar_download_dir)
+            if os.path.exists(zip_download_url):
+                os.remove(zip_download_url)
             
             #check existence of folder
-            os.makedirs(rar_download_dir, exist_ok=True)
+            os.makedirs(zip_download_url, exist_ok=True)
 
             backorder_file_name = os.path.basename(download_url)
 
-            rar_file_path = os.path.join(rar_download_dir, backorder_file_name)
+            zip_file_path = os.path.join(zip_download_url, backorder_file_name)
 
-            logging.info(f"Downloading file from :[{download_url}] into :[{rar_file_path}]")
+            logging.info(f"Downloading file from :[{download_url}] into :[{zip_file_path}]")
 
             #retrieve (url of the data, folder where file should be downloaded into)
-            urllib.request.urlretrieve(download_url, rar_file_path)
-            logging.info(f"File :[{rar_file_path}] has been downloaded successfully.")
-            return rar_file_path
+            urllib.request.urlretrieve(download_url, zip_file_path)
+            logging.info(f"File :[{zip_file_path}] has been downloaded successfully.")
+            return zip_file_path
             
         except Exception as e:
             raise BackorderPredictionException(e,sys) from e
 
-    def extract_rar_file(self, rar_file_path:str):
+
+    def extract_zip_file(self, zip_file_path:str):
         try:
             raw_data_dir = self.data_ingestion_config.raw_data_dir
 
@@ -56,8 +58,8 @@ class DataIngestion:
 
             os.makedirs(raw_data_dir, exist_ok=True)
 
-            logging.info(f"Extracting tgz file: [{rar_file_path}] into dir: [{raw_data_dir}]")
-            with tarfile.open(rar_file_path) as backorder_rar_file_obj:
+            logging.info(f"Extracting tgz file: [{zip_file_path}] into dir: [{raw_data_dir}]")
+            with tarfile.open(zip_file_path) as backorder_rar_file_obj:
                 backorder_rar_file_obj.extractall(path=raw_data_dir)
             logging.info(f"Extraction completed")
         except Exception as e:
@@ -89,11 +91,8 @@ class DataIngestion:
                 strat_train_set = backorder_data_frame.loc[train_index].drop(["backorder_category"], axis=1)
                 strat_test_set = backorder_data_frame.loc[test_index].drop(["backorder_category"], axis=1)
 
-            train_file_path = os.path.join(self.data_ingestion_config.ingested_train_dir,
-                                            file_name)
-
-            test_file_path = os.path.join(self.data_ingestion_config.ingested_test_dir,
-                                        file_name)
+            train_file_path = os.path.join(self.data_ingestion_config.ingested_train_dir, file_name)
+            test_file_path = os.path.join(self.data_ingestion_config.ingested_test_dir, file_name)
             
             if strat_train_set is not None:
                 os.makedirs(self.data_ingestion_config.ingested_train_dir, exist_ok=True)
@@ -119,7 +118,7 @@ class DataIngestion:
     def initiate_data_ingestion(self)-> DataIngestionArtifact:
         try:
             rar_file_path =  self.download_data()
-            self.extract_rar_file(rar_file_path=rar_file_path)
+            self.extract_zip_file(rar_file_path=rar_file_path)
             return self.split_data_as_train_test()
         except Exception as e:
             raise BackorderPredictionException(e,sys) from e

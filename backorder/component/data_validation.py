@@ -3,13 +3,13 @@ from backorder.exception import BackorderPredictionException
 from backorder.util.util import read_yaml_file
 from backorder.entity.config_entity import DataValidationConfig
 from backorder.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact
-import os, sys
+import os, sys, json
 import pandas  as pd
 from evidently.model_profile import Profile
 from evidently.model_profile.sections import DataDriftProfileSection
 from evidently.dashboard import Dashboard
 from evidently.dashboard.tabs import DataDriftTab
-import json
+
 
 
 class DataValidation:
@@ -34,7 +34,7 @@ class DataValidation:
             raise BackorderPredictionException(e,sys) from e
 
 
-    def is_train_test_file_exists(self)->bool:
+    def is_train_test_file_exists(self) -> bool:
         try:
             logging.info("Checking if training and test file is available")
             is_train_file_exist = False
@@ -53,8 +53,7 @@ class DataValidation:
             if not is_available:
                 training_file = self.data_ingestion_artifact.train_file_path
                 testing_file = self.data_ingestion_artifact.test_file_path
-                message = f"Training file: {training_file} or Testing file: {testing_file}" \
-                    "is not present"
+                message = f"Training file: {training_file} or Testing file: {testing_file} is not present"
                 raise Exception(message)
 
             return is_available

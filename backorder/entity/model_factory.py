@@ -9,6 +9,10 @@ from collections import namedtuple
 from backorder.logger import logging
 from  backorder.exception import BackorderPredictionException
 from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.model_selection import GridSearchCV
+from sklearn import metrics
+import warnings
+warnings.filterwarnings('ignore')
 
 
 GRID_SEARCH_KEY = 'grid_search'
@@ -230,8 +234,7 @@ class ModelFactory:
                                                              model=initialized_model.model,
                                                              best_model=grid_search_cv.best_estimator_,
                                                              best_parameters=grid_search_cv.best_params_,
-                                                             best_score=grid_search_cv.best_score_
-                                                             )
+                                                             best_score=grid_search_cv.best_score_)
             
             return grid_searched_best_model
         except Exception as e:

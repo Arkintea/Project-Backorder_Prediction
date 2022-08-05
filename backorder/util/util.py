@@ -3,6 +3,7 @@ from backorder.exception import BackorderPredictionException
 import os,sys
 import numpy as np
 import pandas as pd
+import dill
 from backorder.constant import *
 
 
@@ -61,7 +62,7 @@ def load_numpy_array_data(file_path: str) -> np.array:
         raise BackorderPredictionException(e, sys) from e
 
 
-def save_object(file_path:str,obj):
+def save_object(file_path:str, obj):
     """
     file_path: str
     obj: Any sort of object

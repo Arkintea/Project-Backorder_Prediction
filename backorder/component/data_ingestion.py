@@ -117,8 +117,8 @@ class DataIngestion:
 
     def initiate_data_ingestion(self)-> DataIngestionArtifact:
         try:
-            rar_file_path =  self.download_data()
-            self.extract_zip_file(rar_file_path=rar_file_path)
+            zip_file_path =  self.download_data()
+            self.extract_zip_file(zip_file_path=zip_file_path)
             return self.split_data_as_train_test()
         except Exception as e:
             raise BackorderPredictionException(e,sys) from e

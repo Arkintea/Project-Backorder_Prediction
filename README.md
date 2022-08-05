@@ -7,6 +7,8 @@ predictive model to forecast backorders and plan accordingly can be constructed.
 Based on past data from inventories, supply chain, and sales, classify the products as
 going into backorder (Yes or No).
 
+https://project-backorder.herokuapp.com/
+
 ### Software and Account Requirements
 1. [Github Account](https://github.com/)
 2. [Heroku Account](https://id.heroku.com/login)

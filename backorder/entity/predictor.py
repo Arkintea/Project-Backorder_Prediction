@@ -120,7 +120,7 @@ class BackorderPredictor:
         try:
             model_path = self.get_latest_model_path()
             model = load_object(file_path=model_path)
-            median_house_value = model.predict(X)
-            return median_house_value
+            backorder = model.predict(X)
+            return backorder
         except Exception as e:
             raise BackorderPredictionException(e, sys) from e

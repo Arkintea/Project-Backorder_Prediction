@@ -149,10 +149,10 @@ def predict():
         
         backorder_df = backorder_data.get_backorder_input_data_frame()
         backorder_predictor = BackorderPredictor(model_dir=MODEL_DIR)
-        went_on_backorder = backorder_predictor.predict(X=backorder_df)
+        went_to_backorder = backorder_predictor.predict(X=backorder_df)
         context = {
             BACKORDER_DATA_KEY: backorder_data.get_backorder_data_as_dict(),
-            WENT_ON_BACKORDER_VALUE_KEY: went_on_backorder}
+            WENT_ON_BACKORDER_VALUE_KEY: went_to_backorder}
         
         return render_template('predict.html', context=context)
     return render_template("predict.html", context=context)

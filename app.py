@@ -20,7 +20,7 @@ PIPELINE_DIR = os.path.join(ROOT_DIR, PIPELINE_FOLDER_NAME)
 MODEL_DIR = os.path.join(ROOT_DIR, SAVED_MODELS_DIR_NAME)
 
 BACKORDER_DATA_KEY = "backorder_data"
-WENT_TO_BACKORDER_VALUE_KEY = "went_on_backorder"
+WENT_ON_BACKORDER_VALUE_KEY = "went_on_backorder"
 
 
 app = Flask(__name__)
@@ -96,7 +96,7 @@ def train():
 def predict():
     context = {
         BACKORDER_DATA_KEY: None,
-        WENT_TO_BACKORDER_VALUE_KEY: None
+        WENT_ON_BACKORDER_VALUE_KEY: None
     }
 
     if request.method == 'POST':
@@ -149,10 +149,10 @@ def predict():
         
         backorder_df = backorder_data.get_backorder_input_data_frame()
         backorder_predictor = BackorderPredictor(model_dir=MODEL_DIR)
-        went_to_backorder = backorder_predictor.predict(X=backorder_df)
+        went_on_backorder = backorder_predictor.predict(X=backorder_df)
         context = {
             BACKORDER_DATA_KEY: backorder_data.get_backorder_data_as_dict(),
-            WENT_TO_BACKORDER_VALUE_KEY: went_to_backorder}
+            WENT_ON_BACKORDER_VALUE_KEY: went_on_backorder}
         
         return render_template('predict.html', context=context)
     return render_template("predict.html", context=context)
